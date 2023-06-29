@@ -16,14 +16,6 @@ interface ContactDao {
     @Delete
     suspend fun deleteContact(contact:Contact)
 
-    @Query("SELECT * FROM contact ORDER BY firstName ASC")
-    suspend fun getContactsOrderedByFirstName(): Flow<List<Contact>>
-
-    @Query("SELECT * FROM contact ORDER BY lastName ASC")
-    suspend fun getContactsOrderedByLastName(): Flow<List<Contact>>
-
-    @Query("SELECT * FROM contact ORDER BY phoneNumber ASC")
-    suspend fun getContactsOrderedByPhoneNumber(): Flow<List<Contact>>
 
 
 

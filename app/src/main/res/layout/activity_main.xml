@@ -6,13 +6,56 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+   <androidx.recyclerview.widget.RecyclerView
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       tools:listitem="@layout/item"
+       >
+
+   </androidx.recyclerview.widget.RecyclerView>
+
+   <Button
+       android:id="@+id/btnAdd"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="30sp"
+       android:layout_marginBottom="100sp"
+       android:text="add"
+       android:textSize="20sp"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintHorizontal_bias="0.498"
+       app:layout_constraintStart_toStartOf="parent"
+       />
+   <TextView
+       android:id="@+id/tvFN"
+       android:layout_width="150sp"
+       android:layout_height="30sp"
+       android:text="First Name"
+       android:textSize="20sp"
+       app:layout_constraintTop_toBottomOf="@id/btnAdd"
+       app:layout_constraintStart_toStartOf="parent"/>
+   <TextView
+       android:id="@+id/tvLN"
+       android:layout_width="150sp"
+       android:layout_height="30sp"
+       android:text="Last Name"
+       android:textSize="20sp"
+       app:layout_constraintTop_toBottomOf="@id/btnAdd"
+       app:layout_constraintEnd_toEndOf="parent"/>
+
+   <TextView
+       android:id="@+id/tvphno"
+       android:layout_width="150sp"
+       android:layout_height="30sp"
+       android:layout_marginTop="52dp"
+       android:text="Phone NO"
+       android:textSize="20sp"
+       app:layout_constraintStart_toEndOf="@id/tvFN"
+       app:layout_constraintTop_toBottomOf="@id/btnAdd" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

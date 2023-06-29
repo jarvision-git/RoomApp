@@ -10,24 +10,29 @@ import androidx.room.RoomDatabase
     version=1
 )
 abstract class ContactDatabase:RoomDatabase() {
-    abstract val dao:ContactDao
+    abstract fun dao():ContactDao
     companion object {
+        @Volatile
         private var INSTANCE: ContactDatabase? = null
 
-        fun getInstance(context: Context): ContactDatabase? {
-            if (INSTANCE == null) {
-                synchronized(ContactDatabase::class) {
-                    INSTANCE = Room.databaseBuilder(context.applicationContext,
-                        ContactDatabase::class.java, "user.db").allowMainThreadQueries()
-                        .build()
+        fun getInstance(context: Context):ContactDatabase{
+            synchronized(this) {
+                var instance = INSTANCE
+
+                if (instance == null) {
+                    instance = Room.databaseBuilder(
+                        context.applicationContext, ContactDatabase::class.java,
+                        "employee_database"
+                    ).fallbackToDestructiveMigration().build()
+
+
+                    INSTANCE = instance
                 }
+
+                return instance
             }
-            return INSTANCE
         }
 
-        fun destroyInstance() {
-            INSTANCE = null
-        }
     }
 
 }
