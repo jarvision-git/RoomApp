@@ -27,7 +27,7 @@
 
     <Button
         android:id="@+id/btnSave"
-        android:layout_width="match_parent"
+        android:layout_width="300sp"
         android:layout_height="50sp"
         android:text="SAVE"
         android:textSize="20sp"
