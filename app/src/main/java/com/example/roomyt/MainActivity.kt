@@ -1,37 +1,51 @@
 package com.example.roomyt
 
+import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.example.roomyt.databinding.ActivityMainBinding
+import com.example.roomyt.databinding.DialogAddBinding
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val ContactDao=(application as ContactApplication).db.dao()
 
-        binding.btnAdd.setOnClickListener {
-            addRecord(ContactDao)
+
+
+        binding.fabAdd.setOnClickListener {
+            showDialog(ContactDao)
+
         }
     }
 
+    private fun showDialog(contactDao:ContactDao) {
+        val customDialog= Dialog(this)
+        val dialogBinding=DialogAddBinding.inflate(layoutInflater)
+        customDialog.setContentView(dialogBinding.root)
+        customDialog.setCanceledOnTouchOutside(false)
+        dialogBinding.btnSave.setOnClickListener {
+            val fName=dialogBinding.etFN.text.toString()
+            val LName=dialogBinding.etLN.text.toString()
+            val PNo=dialogBinding.etPN.text.toString()
 
-    fun addRecord(contactDao: ContactDao)
-    {
-        val fName=binding.tvFN.text.toString()
-        val LName=binding.tvLN.text.toString()
-        val PNo=binding.tvphno.text.toString()
+            lifecycleScope.launch {
+                contactDao.upsertContact(Contact(firstName = fName, lastName = LName, phoneNumber = PNo))
+                Toast.makeText(applicationContext,"Record Saved", Toast.LENGTH_SHORT).show()
+            }
+            customDialog.dismiss()
 
-        lifecycleScope.launch {
-            contactDao.upsertContact(Contact(firstName = fName, lastName = LName, phoneNumber = PNo))
-            Toast.makeText(applicationContext,"Record Saved", Toast.LENGTH_SHORT).show()
         }
-
+        customDialog.show()
 
     }
+
+
 }
