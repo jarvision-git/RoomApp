@@ -19,6 +19,9 @@ interface ContactDao {
     @Query("SELECT * FROM contact")
     fun fetchAllEmployees():Flow<List<Contact>>
 
+    @Query("Select * from contact where id=:id")
+    fun fetchEmployeeById(id:Int):Flow<Contact>
+
 
 
 

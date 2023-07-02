@@ -5,9 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roomyt.databinding.ItemBinding
 
-class ItemAdapter(private val items:ArrayList<Contact>
-                  //private val updateListener:(id:Int)->Unit,
-                 // private val deleteListener:(id:Int)->Unit
+class ItemAdapter(private val items:ArrayList<Contact>,
+                  private val deleteListener:(id:Int)->Unit
 ):RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
 
     class ViewHolder(binding:ItemBinding):RecyclerView.ViewHolder(binding.root) {
@@ -35,7 +34,7 @@ class ItemAdapter(private val items:ArrayList<Contact>
         holder.phoneNumber.text=item.phoneNumber
 
         holder.delete.setOnClickListener {
-            //updateListener.invoke(item.id)
+            deleteListener.invoke(item.id)
         }
 
 
