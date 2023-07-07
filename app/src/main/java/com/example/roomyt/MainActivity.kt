@@ -2,6 +2,7 @@ package com.example.roomyt
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -71,6 +72,16 @@ class MainActivity : AppCompatActivity() {
             binding.Rv.layoutManager = LinearLayoutManager(this)
             binding.Rv.adapter = itemAdapter
             binding.Rv.visibility= View.VISIBLE
+
+
+
+
+            itemAdapter.onItemClick = { model ->
+
+                // do something with your item
+//                Log.d("TAG", "${model.description}")
+                editRecordDialog(model.id,contactDao)
+            }
         }
         else
         {
@@ -79,45 +90,91 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun deleteRecordAlertDialog(id:Int,contactDao: ContactDao){
-        val builder= AlertDialog.Builder(this)
-        builder.setTitle("Delete Record")
-        lateinit var fn:String
-        lateinit var ln:String
-        lateinit var pn:String
+    private fun editRecordDialog(id: Int, contactDao: ContactDao) {
+        val customDialog = Dialog(this)
+        val dialogBinding = DialogAddBinding.inflate(layoutInflater)
+        customDialog.setContentView(dialogBinding.root)
+        customDialog.setCanceledOnTouchOutside(false)
 
         lifecycleScope.launch {
             contactDao.fetchEmployeeById(id).collect {
-                if (it !=null) {
-                    builder.setMessage("Are you sure you wants to delete ${it.firstName}.")
-                    fn=it.firstName
-                    ln=it.lastName
-                    pn=it.phoneNumber
+                if (it != null) {
+                    dialogBinding.etFN.setText(it.firstName)
+                    dialogBinding.etLN.setText(it.lastName)
+                    dialogBinding.etPN.setText(it.phoneNumber)
 
                 }
             }
         }
 
-        builder.setIcon(android.R.drawable.ic_dialog_alert)
 
-        builder.setPositiveButton("Yes"){dialogInterface, _ ->
-            lifecycleScope.launch {
-                contactDao.deleteContact(Contact(id,fn,ln,pn))
-                Toast.makeText(applicationContext,"Record deleted successfully.",
-                Toast.LENGTH_LONG).show()
+
+            dialogBinding.btnSave.setOnClickListener {
+                val fName = dialogBinding.etFN.text.toString()
+                val LName = dialogBinding.etLN.text.toString()
+                val PNo = dialogBinding.etPN.text.toString()
+
+                lifecycleScope.launch {
+                    contactDao.upsertContact(
+                        Contact(
+                            id,
+                            firstName = fName,
+                            lastName = LName,
+                            phoneNumber = PNo
+                        )
+                    )
+                    Toast.makeText(applicationContext, "Record Saved", Toast.LENGTH_SHORT).show()
+                }
+                customDialog.dismiss()
+
             }
-            dialogInterface.dismiss()
+        customDialog.show()
+
 
         }
 
-        builder.setNegativeButton("NO"){dialogInterface, which->
-            dialogInterface.dismiss()
+        private fun deleteRecordAlertDialog(id: Int, contactDao: ContactDao) {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Delete Record")
+            lateinit var fn: String
+            lateinit var ln: String
+            lateinit var pn: String
+
+            lifecycleScope.launch {
+                contactDao.fetchEmployeeById(id).collect {
+                    if (it != null) {
+                        builder.setMessage("Are you sure you wants to delete ${it.firstName}.")
+                        fn = it.firstName
+                        ln = it.lastName
+                        pn = it.phoneNumber
+
+                    }
+                }
+            }
+
+            builder.setIcon(android.R.drawable.ic_dialog_alert)
+
+            builder.setPositiveButton("Yes") { dialogInterface, _ ->
+                lifecycleScope.launch {
+                    contactDao.deleteContact(Contact(id, fn, ln, pn))
+                    Toast.makeText(
+                        applicationContext, "Record deleted successfully.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                dialogInterface.dismiss()
+
+            }
+
+            builder.setNegativeButton("NO") { dialogInterface, which ->
+                dialogInterface.dismiss()
+            }
+
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.setCancelable(false)
+            alertDialog.show()
         }
 
-        val alertDialog:AlertDialog=builder.create()
-        alertDialog.setCancelable(false)
-        alertDialog.show()
-    }
 
 
 

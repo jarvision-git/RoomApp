@@ -9,12 +9,20 @@ class ItemAdapter(private val items:ArrayList<Contact>,
                   private val deleteListener:(id:Int)->Unit
 ):RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
 
-    class ViewHolder(binding:ItemBinding):RecyclerView.ViewHolder(binding.root) {
+    var onItemClick: ((Contact) -> Unit)? = null
+
+    inner class ViewHolder(binding:ItemBinding):RecyclerView.ViewHolder(binding.root) {
         val llMain = binding.llMain
         val firstName=binding.tvFN
         val lastName=binding.tvLN
         val phoneNumber=binding.tvPhone
         val delete=binding.ivDelete
+
+        init {
+            itemView.setOnClickListener {
+                onItemClick?.invoke(items[adapterPosition])
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
